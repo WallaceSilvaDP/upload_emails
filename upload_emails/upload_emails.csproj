@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Arquivos\Novos\" />
+    <Folder Include="wwwroot\Arquivos\Recebidos\" />
+  </ItemGroup>
+
+</Project>

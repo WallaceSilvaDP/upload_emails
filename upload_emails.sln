@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "upload_emails", "upload_emails\upload_emails.csproj", "{083D678A-A0CE-4444-8AD8-90AF7E9AB43D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{083D678A-A0CE-4444-8AD8-90AF7E9AB43D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{083D678A-A0CE-4444-8AD8-90AF7E9AB43D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{083D678A-A0CE-4444-8AD8-90AF7E9AB43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{083D678A-A0CE-4444-8AD8-90AF7E9AB43D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {02E7CD11-29A3-442B-A704-DB87B13DBE12}
+	EndGlobalSection
+EndGlobal
