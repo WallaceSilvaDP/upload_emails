@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,8 +20,6 @@ namespace upload_emails.Controllers
         //Define uma instância de IHostingEnvironment
         IWebHostEnvironment _appEnvironment;
 
-
-
         //Injeta a instância no construtor para poder usar os recursos
         public UploadController(IWebHostEnvironment env)
         {
@@ -27,7 +27,6 @@ namespace upload_emails.Controllers
         }
         public IActionResult Index()
         {
-            
             return View();
         }
        
@@ -38,13 +37,11 @@ namespace upload_emails.Controllers
             {
                 //retorna a viewdata com erro
                 ViewData["Erro"] = "Error: Arquivo(s) não selecionado(s)";
-                return View(ViewData);
+                return null;
             }
 
-            string nomeArquivo = DateTime.Now.Millisecond.ToString() + "_" + arquivo.FileName;
-
+            string nomeArquivo = Guid.NewGuid().ToString() + "_" + arquivo.FileName;
             string caminhoDestinoArquivo = _appEnvironment.WebRootPath + @"\Arquivos\";
-
             string caminhoDestinoArquivoOriginal = caminhoDestinoArquivo + @"\Recebidos\" + nomeArquivo;
 
             //copia o arquivo para o local de destino original
@@ -54,35 +51,47 @@ namespace upload_emails.Controllers
             }
 
             separarArquivo(nomeArquivo);
-
-            //monta a ViewData que será exibida na view como resultado do envio 
-            ViewData["Resultado"] = $" arquivos foram enviados ao servidor, " +
-                 $"com tamanho total de :  bytes";
-            //retorna a viewdata
             return View(GetArquivos());
         }
 
+        private Boolean ValidateEmail(string email_recebido)
+        {
+            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+            Match match = regex.Match(email_recebido);
+            if (match.Success)
+                return true;
+            else
+                return false;
+        }
         private void separarArquivo(string nome_arquivo)
         {
-            int counter = 1;
+            int counter = 0;
             string line;
 
             string caminhoDestinoArquivo = _appEnvironment.WebRootPath + @"\Arquivos";
 
             StreamReader file = new StreamReader(caminhoDestinoArquivo + @"\Recebidos\" + nome_arquivo);
-            StreamWriter valor = new StreamWriter(caminhoDestinoArquivo + @"\Novos\01.txt", false, Encoding.ASCII);
+            StreamWriter arquivoNovo = new StreamWriter(caminhoDestinoArquivo + @"\Novos\01.txt", false, Encoding.ASCII);
 
+            ArrayList emailsNovo = new ArrayList();
+            
             while ((line = file.ReadLine()) != null)
             {
-                valor.Write(line + Environment.NewLine);
+                if (ValidateEmail(line) && !emailsNovo.Contains(line)) {
+                    emailsNovo.Add(line + Environment.NewLine);
+                    arquivoNovo.Write(line + Environment.NewLine);
+                    counter++;
+                }
+
                 if (counter % 5 == 0)
                 {
-                    valor.Close();
-                    valor = new StreamWriter(caminhoDestinoArquivo + @"\Novos\0" + ((counter / 5) + 1).ToString() + ".txt", false, Encoding.ASCII);
+                    arquivoNovo.Close();
+                    arquivoNovo = new StreamWriter(caminhoDestinoArquivo + @"\Novos\0" + ((counter / 5) + 1).ToString() + ".txt", false, Encoding.ASCII);
+                    emailsNovo = new ArrayList();
                 }
-                counter++;
+                
             }
-            valor.Close();
+            arquivoNovo.Close();
             System.IO.File.Delete(caminhoDestinoArquivo + @"\Novos\0" + ((counter / 5) + 1).ToString() + ".txt");
 
             file.Close();
@@ -91,9 +100,7 @@ namespace upload_emails.Controllers
         {
 
             List<UploadModel> lstArquivos = new List<UploadModel>();
-            //DirectoryInfo dirInfo = new DirectoryInfo(HostingEnvironment.MapPath("~/Arquivos"));
             string caminhoDestinoArquivo = _appEnvironment.WebRootPath + @"\Arquivos\";
-
             string caminhoDestinoArquivoOriginal = caminhoDestinoArquivo + @"\Novos\";
             DirectoryInfo dirInfo = new DirectoryInfo(caminhoDestinoArquivoOriginal);
             
