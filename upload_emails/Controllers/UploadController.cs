@@ -33,13 +33,7 @@ namespace upload_emails.Controllers
         //método para enviar os arquivos usando a interface IFormFile
         public async Task<IActionResult> UploadArquivo(IFormFile arquivo)
         {
-            if (arquivo == null || arquivo.Length == 0)
-            {
-                //retorna a viewdata com erro
-                ViewData["Erro"] = "Error: Arquivo(s) não selecionado(s)";
-                return null;
-            }
-
+            
             string nomeArquivo = Guid.NewGuid().ToString() + "_" + arquivo.FileName;
             string caminhoDestinoArquivo = _appEnvironment.WebRootPath + @"\Arquivos\";
             string caminhoDestinoArquivoOriginal = caminhoDestinoArquivo + @"\Recebidos\" + nomeArquivo;
@@ -117,7 +111,7 @@ namespace upload_emails.Controllers
                 }
 
                 file.Close();
-                    lstArquivos.Add(new UploadModel()
+                lstArquivos.Add(new UploadModel()
                 {
                     arquivoID = i + 1,
                     arquivoNome = item.Name,
